@@ -1,6 +1,6 @@
 VPATH = src
 
-# Lirbary products
+# Library products
 ALL_LIBS = foenix.a
 
 # Common source files
