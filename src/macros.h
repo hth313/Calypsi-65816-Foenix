@@ -1,7 +1,7 @@
 #ifndef __MACROS_H
 #define __MACROS_H
 
-//#ifdef __CALYPSI_ASSEMBLER__
+#ifdef __CALYPSI_ASSEMBLER__
 
 #ifdef __CALYPSI_CODE_MODEL_SMALL__
 
@@ -36,5 +36,5 @@ jump          .macro  dest
               .endm
 
 #endif // __CALYPSI_CODE_MODEL_SMALL__
-//#endif // __CALYPSI_ASSEMBLER__
+#endif // __CALYPSI_ASSEMBLER__
 #endif // __MACROS_H
