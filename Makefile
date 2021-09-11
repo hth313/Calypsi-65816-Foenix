@@ -4,8 +4,8 @@ VPATH = src
 ALL_LIBS = foenix.a
 
 # Common source files
-ASM_SRCS = foenix-startup.s
-C_SRCS =
+ASM_SRCS = foenix-startup.s stub_putchar.s
+C_SRCS = stub_write.c stub_lseek.c stub_close.c
 
 # Object files
 OBJS = $(ASM_SRCS:%.s=%.o) $(C_SRCS:%.c=%.o)
