@@ -17,4 +17,4 @@
     `(memory ,name (address (,start . ,end)) ,section-list)))
 
 (define far-bank-sections
-  '(section farcode far zfar cfar switch data_init_table))
+  '(section farcode far zfar cfar switch))
