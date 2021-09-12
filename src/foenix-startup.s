@@ -21,7 +21,8 @@
 
 ;;; ***************************************************************************
 ;;;
-;;; __program_start / __calypsi_entry - default entry point of the program
+;;; __program_root_section - this is what the linker pulls in first
+;;; __program_start - actual start point of the program
 ;;;
 ;;; Set up CPU stack, initialize sections and call main().
 ;;; You can override this with your own routine, or tailor it as needed.
@@ -31,8 +32,8 @@
 ;;; ***************************************************************************
 
               .section code, noreorder
-              .pubweak __program_start, __calypsi_entry
-__calypsi_entry:
+              .pubweak __program_root_section, __program_start
+__program_root_section:
 __program_start:
               clc
               xce                   ; native 16-bit mode
