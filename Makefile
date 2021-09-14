@@ -4,7 +4,7 @@ VPATH = src
 ALL_LIBS = foenix-lc-sd.a
 
 # Common source files
-ASM_SRCS = foenix-startup.s stub_putchar.s
+ASM_SRCS = foenix-startup.s stub_exit.s  stub_putchar.s
 C_SRCS = stub_write.c stub_lseek.c stub_close.c
 
 # Object files

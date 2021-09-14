@@ -38,8 +38,6 @@ __program_start:
               clc
               xce                   ; native 16-bit mode
               rep     #0x38         ; 16-bit registers, no decimal mode
-              ldx     ##.sectionEnd stack
-              txs                   ; set stack
               lda     ##_DirectPageStart
               tcd                   ; set direct page
 #ifdef __CALYPSI_DATA_MODEL_SMALL__
@@ -52,6 +50,8 @@ __program_start:
               pha
               plb                   ; pop 8 dummy
               plb                   ; set data bank
+              tsx
+              stx     _InitialStack ; for exit()
               call    __low_level_init
 
 ;;; **** Initialize data sections if needed.
@@ -125,3 +125,19 @@ __call_heap_initialize:
               .pubweak __low_level_init
 __low_level_init:
               return
+
+;;; ***************************************************************************
+;;;
+;;; Keep track of the initial stack pointer so that it can be restores to make
+;;; a return back on exit().
+;;;
+;;; ***************************************************************************
+
+#ifdef __CALYPSI_DATA_MODEL_SMALL__
+              .section zdata, bss
+#else
+              .section znear, bss
+#endif
+              .public _InitialStack
+_InitialStack:
+              .space  2
