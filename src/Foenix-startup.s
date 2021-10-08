@@ -51,7 +51,11 @@ __program_start:
               plb                   ; pop 8 dummy
               plb                   ; set data bank
               tsx
-              stx     _InitialStack ; for exit()
+#ifdef __CALYPSI_DATA_MODEL_SMALL__
+              stx     abs:_InitialStack ; for exit()
+#else
+              stx     abs:.near _InitialStack ; for exit()
+#endif
               call    __low_level_init
 
 ;;; **** Initialize data sections if needed.
