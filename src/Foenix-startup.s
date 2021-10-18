@@ -50,12 +50,7 @@ __program_start:
               pha
               plb                   ; pop 8 dummy
               plb                   ; set data bank
-              tsx
-#ifdef __CALYPSI_DATA_MODEL_SMALL__
-              stx     abs:_InitialStack ; for exit()
-#else
-              stx     abs:.near _InitialStack ; for exit()
-#endif
+
               call    __low_level_init
 
 ;;; **** Initialize data sections if needed.
@@ -78,6 +73,13 @@ __data_initialization_needed:
               sta     dp:.tiny(_Dp+0)
 #endif
               call    __initialize_sections
+
+              tsx
+#ifdef __CALYPSI_DATA_MODEL_SMALL__
+              stx     abs:_InitialStack ; for exit()
+#else
+              stx     abs:.near _InitialStack ; for exit()
+#endif
 
 ;;; **** Initialize streams if needed.
               .section code, noroot, noreorder
