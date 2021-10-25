@@ -56,6 +56,24 @@ inline vram_ptr vicky_address (vram_ptr p) {
 
 // ----------------------------------------------------------------------
 //
+// Bitmap plane
+//
+// ----------------------------------------------------------------------
+
+typedef struct bitmap_plane {
+  uint8_t  control;
+  vram_ptr start;
+  uint8_t  x_offset;
+  uint8_t  y_offset;
+  uint16_t reserved;
+} bitmap_plane_t;
+
+// There are two bitmap planes., use them as bitmap[n].field
+// where n is 0-1.
+#define bitmap_plane ((bitmap_plane_t __far *)0xaf0100)
+
+// ----------------------------------------------------------------------
+//
 // Sprites
 //
 // ----------------------------------------------------------------------
@@ -125,5 +143,58 @@ typedef struct vdma {
 #define VDMA_STAT_Src_Add_Err 0x04 // If Set to 1, Source Address Invalid
 #define VDMA_STAT_VDMA_IPS    0x80 // If Set to 1, VDMA Transfer in Progress.
                 // Do not attempt to access VRAM while a VDMA is in progress!
+
+// Video DMA
+#define vdma ((vdma_t __far *)0xaf0400)
+
+// ----------------------------------------------------------------------
+//
+// Vicky
+//
+// ----------------------------------------------------------------------
+
+typedef struct vicky {
+  uint16_t master_control;
+  uint8_t  gamma_control;
+  uint8_t  reserved_01;
+  uint8_t  border_control;
+  uint8_t  border_blue;
+  uint8_t  border_green;
+  uint8_t  border_red;
+  uint8_t  border_width;
+  uint8_t  border_height;
+  uint8_t  reserved_02[3];
+  uint8_t  background_blue;
+  uint8_t  background_green;
+  uint8_t  background_red;
+  uint8_t  cursor_control;
+  uint8_t  test_start;
+  char     cursor;
+  uint8_t  cursor_color;
+  uint16_t cursor_x;
+  uint16_t cursor_y;
+  uint32_t line_interrupt_control;
+  uint16_t vicky_chip_num;
+  uint16_t vicky_chip_version;
+} vicky_t;
+
+// Vicky registers
+#define vicky ((vicky_t __far *)0xaf0000)
+
+// Modes
+#define Mstr_Ctrl_Text_Mode__Lo_En  0x01        Enable the Text Mode
+#define Mstr_Ctrl_Text_Overlay      0x02   // Enable the Overlay of the text mode
+                                           // on top of Graphic Mode
+                                           // (the Background Color is ignored)
+#define Mstr_Ctrl_Graph_Mode_En     0x04   // Enable the Graphic Mode
+#define Mstr_Ctrl_Bitmap_En         0x08   // Enable the Bitmap Module In Vicky
+#define Mstr_Ctrl_TileMap_En        0x10   // Enable the Tile Module in Vicky
+#define Mstr_Ctrl_Sprite_En         0x20   // Enable the Sprite Module in Vicky
+#define Mstr_Ctrl_GAMMA_En          0x40   // Enable the GAMMA correction
+                                           // The Analog and DVI have different color values,
+                                           // the GAMMA is great to correct the difference
+#define Mstr_Ctrl_Disable_Vid       0x80   // This will disable the Scanning of the Video
+                                           // information in the 4Meg of VideoRAM hence giving
+                                           // 100% bandwidth to the CPU
 
 #endif // __VICKY_H__
