@@ -147,6 +147,13 @@ typedef struct vdma {
 // Video DMA
 #define vdma ((vdma_t __far *)0xaf0400)
 
+// 24-bit color
+typedef struct color24 {
+  uint8_t  blue;
+  uint8_t  green;
+  uint8_t  red;
+} color24_t;
+
 // ----------------------------------------------------------------------
 //
 // Vicky
@@ -154,28 +161,30 @@ typedef struct vdma {
 // ----------------------------------------------------------------------
 
 typedef struct vicky {
-  uint16_t master_control;
-  uint8_t  gamma_control;
-  uint8_t  reserved_01;
-  uint8_t  border_control;
-  uint8_t  border_blue;
-  uint8_t  border_green;
-  uint8_t  border_red;
-  uint8_t  border_width;
-  uint8_t  border_height;
-  uint8_t  reserved_02[3];
-  uint8_t  background_blue;
-  uint8_t  background_green;
-  uint8_t  background_red;
-  uint8_t  cursor_control;
-  uint8_t  test_start;
-  char     cursor;
-  uint8_t  cursor_color;
-  uint16_t cursor_x;
-  uint16_t cursor_y;
-  uint32_t line_interrupt_control;
-  uint16_t vicky_chip_num;
-  uint16_t vicky_chip_version;
+  uint16_t  master_control;
+  uint8_t   gamma_control;
+  uint8_t   reserved_01;
+  uint8_t   border_control;
+  color24_t border_color;
+  uint8_t   border_width;
+  uint8_t   border_height;
+  uint8_t   reserved_02[3];
+  color24_t background_color;
+  uint8_t   cursor_control;
+  uint8_t   test_start;
+  char      cursor;
+  uint8_t   cursor_color;
+  uint16_t  cursor_x;
+  uint16_t  cursor_y;
+  uint32_t  line_interrupt_control;  // bit 0 = line0, bit 1 = line1
+  union {
+    uint16_t vicky_chip_num;    // read
+    uint16_t line0_cmp_value;   // write
+  };
+  union {
+    uint16_t vicky_chip_version;
+    uint16_t line1_cmp_value;   // write
+  };
 } vicky_t;
 
 // Vicky registers
