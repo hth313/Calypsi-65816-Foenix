@@ -40,6 +40,11 @@
              (section (registers ztiny)))
      (memory Vector (address (#xfff0 . #xffff))
              (section (reset #xfffc)))
+     (memory palettes (address (#xaf2000 . #xaf3fff))
+             (section palette0 palette1 palette2 palette3
+                      palette4 palette5 palette6 palette7))
+     (memory vram (address (#xb00000 . #xefffff))
+             (section vram))
      (block heap (size #x1000))
      (base-address _DirectPageStart DirectPage 0)
      (base-address _NearBaseAddress near-bank  0)
