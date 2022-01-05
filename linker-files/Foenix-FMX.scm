@@ -9,10 +9,13 @@
   (append
    ;; Use bank 02 to 1F, the full memory on U for 64K banks, no huge
    ;; memory defined here.
-   (map (lambda (n) (one-bank 'bank far-bank-sections n)) (range 2 #x3f))
+   (map (lambda (n) (one-bank 'bank far-bank-sections n)) (range 3 #x3f))
    ;; Use bank 01 for the Near area
    '((memory near-bank (address (#x10000 . #x1ffff))
              (section znear near cnear))
+     ;; Use bank 02 for vram initializers and code
+     (memory bank02  (address (#x20000 . #x2ffff))
+             (section ivram farcode))
      ;; The remaining memories are in bank 00
      (memory LoRAM (address (#x2100 . #x6fff))
              (section data zdata data heap))
