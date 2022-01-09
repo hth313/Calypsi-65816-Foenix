@@ -7,6 +7,8 @@
 
 typedef uint8_t __far24 * vram_ptr;
 
+#define in_vram(addr) ((((unsigned short)(((unsigned long)(addr)) >> 16)) & 0xff) >= 0xb0)
+
 // ----------------------------------------------------------------------
 //
 // Tile map
