@@ -10,7 +10,7 @@
 //
 // ----------------------------------------------------------------------
 
-#define SDMA_CTRL_REG0            (*(volatile __vram uint8_t *)0xaf0420)
+#define SDMA_CTRL_REG0            (*(volatile __far uint8_t *)0xaf0420)
 
 // SDMA_CTRL_REG0 field bits
 #define SDMA_CTRL0_Enable         0x01
@@ -89,7 +89,7 @@
 // ----------------------------------------------------------------------
 
 
-#define VDMA_CONTROL_REG         (*(volatile __vram uint8_t *)0xaf0400)
+#define VDMA_CONTROL_REG         (*(volatile __far uint8_t *)0xaf0400)
 
 // VDMA_CONTROL_REG field bits
 #define VDMA_CTRL_Enable         0x01
@@ -112,10 +112,10 @@
 #define VDMA_XFER_VRAM2SRAM  0x02  // VRAM -> SRAM transfer
 
 // Write only - byte to write in the fill function
-#define VDMA_BYTE_2_WRITE        (*(volatile __vram uint8_t *)0xaf0401)
+#define VDMA_BYTE_2_WRITE        (*(volatile __far uint8_t *)0xaf0401)
 
 // read only
-#define VDMA_STATUS_REG          (*(volatile __vram uint8_t *)0xaf0401)
+#define VDMA_STATUS_REG          (*(volatile __far uint8_t *)0xaf0401)
 
 // Status bit field definitions
 #define VDMA_STAT_Size_Err       0x01  // if set to 1, overall size is invalid
@@ -135,15 +135,15 @@
 #define VDMA_DST_ADDY          (*(volatile __attribute__((far24)) void * __attribute__((far24)) *)0xaf0405)
 
 // In 1D transfer mode, maximum Value: 0x400000 (4 mega bytes)
-#define VDMA_SIZE              (*(volatile __vram uint32_t *)0xaf0408)
+#define VDMA_SIZE              (*(volatile __far uint32_t *)0xaf0408)
 
 // In 2D Transfer Mode, maximum Value: 0x400000 (65535 bytes)
-#define VDMA_X_SIZE            (*(volatile __vram uint16_t *)0xaf0408)
-#define VDMA_Y_SIZE            (*(volatile __vram uint16_t *)0xaf040a)
+#define VDMA_X_SIZE            (*(volatile __far uint16_t *)0xaf0408)
+#define VDMA_Y_SIZE            (*(volatile __far uint16_t *)0xaf040a)
 
 // Always use an even number
-#define VDMA_SRC_STRIDE        (*(volatile __vram uint16_t *)0xaf040c)
-#define VDMA_DST_STRIDE        (*(volatile __vram uint16_t *)0xaf040e)
+#define VDMA_SRC_STRIDE        (*(volatile __far uint16_t *)0xaf040c)
+#define VDMA_DST_STRIDE        (*(volatile __far uint16_t *)0xaf040e)
 
 // ----------------------------------------------------------------------
 //

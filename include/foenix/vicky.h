@@ -3,11 +3,137 @@
 
 #include <stdint.h>
 
-#define __vram __far
-
 typedef uint8_t __far24 * vram_ptr;
 
 #define in_vram(addr) ((((unsigned short)(((unsigned long)(addr)) >> 16)) & 0xff) >= 0xb0)
+
+// ----------------------------------------------------------------------
+//
+// Internal VICKY Registers and internal memory locations (LUTs)
+//
+// ----------------------------------------------------------------------
+
+#define MASTER_CTRL_REG  (*(volatile __far uint16_t *)0xaf0000)
+
+#define Mstr_Ctrl_Text_Mode_En   0x0001  // enable the text mode
+#define Mstr_Ctrl_Text_Overlay   0x0002  // enable the overlay of the text mode
+                                         //   on top of Graphic Mode
+                                         //   (the background color is ignored)
+#define Mstr_Ctrl_Graph_Mode_En  0x0004  // enable the graphic mode
+#define Mstr_Ctrl_Bitmap_En      0x0008  // enable the bitmap module
+#define Mstr_Ctrl_TileMap_En     0x0010  // enable the tile module
+#define Mstr_Ctrl_Sprite_En      0x0020  // enable the sprite module
+#define Mstr_Ctrl_GAMMA_En       0x0040  // this enable the gamma correction
+                                         //  - The analog and DVI have different
+                                         // color value, the gamma is great
+                                         // to correct the difference
+#define Mstr_Ctrl_Disable_Vid    0x0080  // disable the scanning of the video,
+                                         // hence giving 100% bandwith to the CPU
+
+#define Mstr_Ctrl_Video_Mode0    0x0100  // 0 - 640x480 (Clock @ 25.175Mhz)
+                                         // 1 - 800x600 (Clock @ 40Mhz)
+#define Mstr_Ctrl_Video_Mode1    0x0200  // 0 - no pixel doubling
+                                         // 1- pixel doubling
+                                         // (reduce the pixel resolution by 2)
+
+// Reserved - TBD
+#define VKY_RESERVED_00          (*(volatile __far uint8_t *)0xaf0002)
+#define VKY_RESERVED_01          (*(volatile __far uint8_t *)0xaf0003)
+#define Border_Ctrl_Enable       0x01
+#define BORDER_CTRL_REG          (*(volatile __far uint8_t *)0xaf0004)  // bit[0] - enable (1 by default)
+                                                                        // bit[4..6]: X scroll offset
+                                                                        // ( will scroll left) (acceptable value: 0..7)
+#define BORDER_COLOR_B           (*(volatile __far uint8_t *)0xaf0005)
+#define BORDER_COLOR_G           (*(volatile __far uint8_t *)0xaf0006)
+#define BORDER_COLOR_R           (*(volatile __far uint8_t *)0xaf0007)
+#define BORDER_X_SIZE            (*(volatile __far uint8_t *)0xaf0008)  // X-  values: 0 - 32 (default: 32)
+#define BORDER_Y_SIZE            (*(volatile __far uint8_t *)0xaf0009)  // Y- values 0 -32 (default: 32)
+
+#define BACKGROUND_COLOR_B       (*(volatile __far uint8_t *)0xaf000d)  // when in graphic mode, if a pixel
+                                                                        // is "0" then the background pixel is chosen
+#define BACKGROUND_COLOR_G       (*(volatile __far uint8_t *)0xaf000e)
+#define BACKGROUND_COLOR_R       (*(volatile __far uint8_t *)0xaf000f)
+
+#define VKY_TXT_CURSOR_CTRL_REG  (*(volatile __far uint8_t *)0xaf0010)  // [0] enable text mode
+#define Vky_Cursor_Enable        0x01
+#define Vky_Cursor_Flash_Rate0   0x02
+#define Vky_Cursor_Flash_Rate1   0x04
+#define Vky_Cursor_FONT_Page0    0x08  // pick font page 0 or font page 1
+#define Vky_Cursor_FONT_Page1    0x10  // pick font page 0 or font page 1
+#define VKY_TXT_START_ADD_PTR    ((volatile __far uint8_t *)0xaf0011)  // this is an offset to change the starting address
+                                                                       //  of the Text Mode Buffer (in x)
+#define VKY_TXT_CURSOR_CHAR_REG  (*(volatile __far uint8_t *)0xaf0012)
+
+#define VKY_TXT_CURSOR_COLR_REG  (*(volatile __far uint8_t *)0xaf0013)
+#define VKY_TXT_CURSOR_X_REG     (*(volatile __far uint16_t *)0xaf0014)
+#define VKY_TXT_CURSOR_Y_REG     (*(volatile __far uint16_t *)0xaf0016)
+
+
+// Line Interrupt Registers
+#define VKY_LINE_IRQ_CTRL_REG    (*(volatile __far uint8_t *)0xaf001b)   // [0] - enable line 0
+                                                                         // [1] -enable line 1
+#define VKY_LINE0_CMP_VALUE      (*(volatile __far uint16_t *)0xaf001c)  // write only [11:0]
+#define VKY_LINE1_CMP_VALUE      (*(volatile __far uint16_t *)0xaf001e)  // write only [11:0]
+
+// When you Read the Register
+#define VKY_INFO_CHIP_NUM        (*(volatile __far uint16_t *)0xaf001c)
+#define VKY_INFO_CHIP_VER        (*(volatile __far uint16_t *)0xaf001e)
+
+// Mouse Pointer Graphic Memory
+#define MOUSE_PTR_GRAP0_START     (*(volatile __far uint8_t *)0xaf0500)  // 16 x 16 = 256 pixels (grey scale)
+                                                                         // 0 = transparent
+                                                                         // 1 = black
+                                                                         // 255 = white
+#define MOUSE_PTR_GRAP0_END       (*(volatile __far uint8_t *)0xaf05ff)  // pointer 0
+#define MOUSE_PTR_GRAP1_START     (*(volatile __far uint8_t *)0xaf0600)  //
+#define MOUSE_PTR_GRAP1_END       (*(volatile __far uint8_t *)0xaf06ff)  // pointer 1
+
+#define MOUSE_PTR_CTRL_REG        (*(volatile __far uint16_t *)0xaf0700) // bit[0] enable
+                                                                         // bit[1] = 0
+                                                                         //   ( 0 = pointer0, 1 = pointer1)
+#define MOUSE_PTR_X_POS          (*(volatile __far uint16_t *)0xaf0702)  // X position (0 - 639) (can only read now)
+                                                                         //   writing will have no effect
+#define MOUSE_PTR_Y_POS          (*(volatile __far uint16_t *)0xaf0704)  // Y Position (0 - 479) (can only read now)
+                                                                         //   writing will have no effect
+#define MOUSE_PTR                (*(volatile vram_ptr *)0xaf0706)        // mouse packet
+#define C256F_MODEL_MAJOR        (*(volatile __far uint8_t *)0xaf070b)
+#define C256F_MODEL_MINOR        (*(volatile __far uint8_t *)0xaf070c)
+#define FPGA_DOR                 (*(volatile __far uint8_t *)0xaf070d)
+#define FPGA_MOR                 (*(volatile __far uint8_t *)0xaf070e)
+#define FPGA_YOR                 (*(volatile __far uint8_t *)0xaf070f)
+
+#define FG_CHAR_LUT_PTR          ((volatile __far uint8_t *)0xAF1F40)
+#define BG_CHAR_LUT_PTR          (*(volatile __far uint8_t *)0xaf1f80)
+
+#define GRPH_LUT0_PTR            (*(volatile __far uint8_t *)0xaf2000)
+#define GRPH_LUT1_PTR            (*(volatile __far uint8_t *)0xaf2400)
+#define GRPH_LUT2_PTR            (*(volatile __far uint8_t *)0xaf2800)
+#define GRPH_LUT3_PTR            (*(volatile __far uint8_t *)0xaf2c00)
+#define GRPH_LUT4_PTR            (*(volatile __far uint8_t *)0xaf3000)
+#define GRPH_LUT5_PTR            (*(volatile __far uint8_t *)0xaf3400)
+#define GRPH_LUT6_PTR            (*(volatile __far uint8_t *)0xaf3800)
+#define GRPH_LUT7_PTR            (*(volatile __far uint8_t *)0xaf3c00)
+
+#define GRPH_LUT0_LONG           ((volatile __far uint32_t *)0xaf2000)
+#define GRPH_LUT1_LONG           ((volatile __far uint32_t *)0xaf2400)
+#define GRPH_LUT2_LONG           ((volatile __far uint32_t *)0xaf2800)
+#define GRPH_LUT3_LONG           ((volatile __far uint32_t *)0xaf2c00)
+#define GRPH_LUT4_LONG           ((volatile __far uint32_t *)0xaf3000)
+#define GRPH_LUT5_LONG           ((volatile __far uint32_t *)0xaf3400)
+#define GRPH_LUT6_LONG           ((volatile __far uint32_t *)0xaf3800)
+#define GRPH_LUT7_LONG           ((volatile __far uint32_t *)0xaf3c00)
+
+#define GAMMA_B_LUT_PTR          (*(volatile __far uint8_t *)0xaf4000)
+#define GAMMA_G_LUT_PTR          (*(volatile __far uint8_t *)0xaf4100)
+#define GAMMA_R_LUT_PTR          (*(volatile __far uint8_t *)0xaf4200)
+
+#define FONT_MEMORY_BANK0        (*(volatile __far uint8_t *)0xaf8000)  //$af8000 - $af87ff
+#define FONT_MEMORY_BANK1        (*(volatile __far uint8_t *)0xaf8800)  //$af8800 - $af8fff
+#define CS_TEXT_MEM_PTR          ((volatile __far uint8_t *)0xafa000)
+#define CS_COLOR_MEM_PTR         ((volatile __far uint8_t *)0xafc000)
+
+#define BTX_START                (*(volatile __far uint8_t *)0xafe000)  // Beatrix Registers
+#define BTX_END                  (*(volatile __far uint8_t *)0xafffff)
 
 // ----------------------------------------------------------------------
 //
@@ -62,17 +188,17 @@ inline vram_ptr vicky_address (vram_ptr p) {
 //
 // ----------------------------------------------------------------------
 
-typedef struct bitmap_plane {
+typedef struct bitplane {
   uint8_t  control;
   vram_ptr start;
   uint8_t  x_offset;
   uint8_t  y_offset;
   uint16_t reserved;
-} bitmap_plane_t;
+} bitplane_t;
 
-// There are two bitmap planes., use them as bitmap[n].field
+// There are two bitmap planes, use them as bitplane[n].field
 // where n is 0-1.
-#define bitmap_plane ((bitmap_plane_t __far *)0xaf0100)
+#define bitplane ((bitplane_t __far *)0xaf0100)
 
 // ----------------------------------------------------------------------
 //
@@ -192,20 +318,5 @@ typedef struct vicky {
 // Vicky registers
 #define vicky ((vicky_t __far *)0xaf0000)
 
-// Modes
-#define Mstr_Ctrl_Text_Mode__Lo_En  0x01        Enable the Text Mode
-#define Mstr_Ctrl_Text_Overlay      0x02   // Enable the Overlay of the text mode
-                                           // on top of Graphic Mode
-                                           // (the Background Color is ignored)
-#define Mstr_Ctrl_Graph_Mode_En     0x04   // Enable the Graphic Mode
-#define Mstr_Ctrl_Bitmap_En         0x08   // Enable the Bitmap Module In Vicky
-#define Mstr_Ctrl_TileMap_En        0x10   // Enable the Tile Module in Vicky
-#define Mstr_Ctrl_Sprite_En         0x20   // Enable the Sprite Module in Vicky
-#define Mstr_Ctrl_GAMMA_En          0x40   // Enable the GAMMA correction
-                                           // The Analog and DVI have different color values,
-                                           // the GAMMA is great to correct the difference
-#define Mstr_Ctrl_Disable_Vid       0x80   // This will disable the Scanning of the Video
-                                           // information in the 4Meg of VideoRAM hence giving
-                                           // 100% bandwidth to the CPU
 
 #endif // __VICKY_H__
