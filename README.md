@@ -5,6 +5,65 @@ This project contains a library and linker control files to make
 it easy to get started on using the Calypsi C compiler for the
 C256 Foenix.
 
+Usage
+-----
+
+This module is currently intended to be included as a Git submodule
+in your own project. You can see examples of this in existing projects
+such as
+[Hello World for C256U](https://github.com/hth313/Calypsi-65816-hello-world)
+where this project is included under the `module` folder.
+
+To attach this project to you project while standing in the root folder
+
+```
+git submodule add https://github.com/hth313/Calypsi-65816-Foenix.git module/Calypsi-65816-Foenix
+```
+
+This will put the project under the `module` folder which can be a
+good idea if you end up having more than one sub-module in your
+project.
+
+Also note the use of HTTPS (`https://` prefix) rather than SSH
+(`git@github.com:user` prefix) which is important if you want
+to allow people to clone your project with the submodule.
+If you use SSH it will require them to have SSH keys set up to
+access your account and that will usually result in errors.
+
+You can read more about working with Git submodules
+[here](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+
+You need to commit some files in your project about the submodule.
+There are two parts, one describes that you have a submodule and
+its related paths. The other is the commit hash of the version you
+are using.
+
+The commit hash is used when the project is clioned later. The actual
+version used will be checked out.
+
+If you want to make changes to a submodule there are a couple of
+things to pay attention to:
+
+1. You probably want to fork the submodule project so you have a
+   place push changes to.
+
+2. This forked project you should add as a `git remote` and in
+   this case you want to use the SSH URL as you are going to
+   write to your own repository.
+
+3. Ensure that you are on some kind of branch and not in a
+   detached head state before you commit. You can do this
+   using `git status`. If you are in detached head, check
+   out a branch, e.g. `git checkout main`.
+
+4. Make changes and commit as you would normally do.
+
+5. Push your changes to your host, e.g. Github or Gitlab.
+
+6. Inspect your actual (parent) project, it will have the new
+   commit hash for the changed submodule, you want to commit
+   this in your main project.
+
 Startup module
 --------------
 
