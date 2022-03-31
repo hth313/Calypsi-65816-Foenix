@@ -6,7 +6,7 @@
 #include "support.h"
 
 #if defined(__CALYPSI_TARGET_65816__) && defined(__CALYPSI_DATA_MODEL_SMALL__)
-void *__memcpy__far (__far void *dest, __far const void *src, size_t n) {
+__far void *__memcpy_far (__far void *dest, __far const void *src, size_t n) {
 #else
 void *memcpy (void *dest, const void *src, size_t n) {
 #endif

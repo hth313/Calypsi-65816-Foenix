@@ -6,7 +6,7 @@
 #include "support.h"
 
 #if defined(__CALYPSI_TARGET_65816__) && defined(__CALYPSI_DATA_MODEL_SMALL__)
-void *__memset__far (__far void *s, int c, size_t n) {
+__far void *__memset__far (__far void *s, int c, size_t n) {
 #else
 void *memset (void *s, int c, size_t n) {
 #endif
