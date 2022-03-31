@@ -15,6 +15,7 @@ such as
 where this project is included under the `module` folder.
 
 To attach this project to you project while standing in the root folder
+of your project:
 
 ```
 git submodule add https://github.com/hth313/Calypsi-65816-Foenix.git module/Calypsi-65816-Foenix
@@ -22,13 +23,14 @@ git submodule add https://github.com/hth313/Calypsi-65816-Foenix.git module/Caly
 
 This will put the project under the `module` folder which can be a
 good idea if you end up having more than one sub-module in your
-project.
+project. You may need to create the `module` folder first.
 
 Also note the use of HTTPS (`https://` prefix) rather than SSH
 (`git@github.com:user` prefix) which is important if you want
 to allow people to clone your project with the submodule.
 If you use SSH it will require them to have SSH keys set up to
-access your account and that will usually result in errors.
+access your account and that will usually result in errors
+for them, while it will work when you try it.
 
 You can read more about working with Git submodules
 [here](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
@@ -37,32 +39,33 @@ You need to commit some files in your project about the submodule.
 There are two parts, one describes that you have a submodule and
 its related paths. The other is the commit hash of the version you
 are using.
-
-The commit hash is used when the project is clioned later. The actual
-version used will be checked out.
+The commit hash is used when the project is cloned later. That
+actual version isthe one that will be checked out.
 
 If you want to make changes to a submodule there are a couple of
 things to pay attention to:
 
 1. You probably want to fork the submodule project so you have a
-   place push changes to.
+   place where you can push your changes to.
 
-2. This forked project you should add as a `git remote` and in
-   this case you want to use the SSH URL as you are going to
-   write to your own repository.
+2. You should add this forked version of the project as
+   another `git remote`, e.g.
+   `git remote add <name> <url>` where `<name> is the name you
+   what to call this remote and the `<url>` is the SSH URL
+   the fork you created.
 
-3. Ensure that you are on some kind of branch and not in a
+3. Ensure that you are on a branch and not in a
    detached head state before you commit. You can do this
-   using `git status`. If you are in detached head, check
+   using `git status`. If you are in detached head state, check
    out a branch, e.g. `git checkout main`.
 
 4. Make changes and commit as you would normally do.
 
-5. Push your changes to your host, e.g. Github or Gitlab.
+5. Push your changes to your code hosting platform, e.g. Github or Gitlab.
 
-6. Inspect your actual (parent) project, it will have the new
-   commit hash for the changed submodule, you want to commit
-   this in your main project.
+6. Inspect your actual (parent) project. It will have the new
+   commit hash for the changed submodule, which you want to commit
+   to your project and also push to your code hosting platform.
 
 Startup module
 --------------
