@@ -212,10 +212,10 @@ typedef struct sprite {
       uint8_t enable : 1;
       uint8_t lut : 3;
       uint8_t depth : 3;
-      uint8_t collisionOn : 1;
+      uint8_t collision_enable : 1;
     };
-    uint8_t control;
-  };
+    uint8_t reg;
+  } control;
   vram_ptr data;
   uint16_t x;
   uint16_t y;
