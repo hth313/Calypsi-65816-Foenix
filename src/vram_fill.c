@@ -12,6 +12,9 @@ void *memset (void *s, int c, size_t n) {
 #endif
   if (in_vram(s)) {
 
+    // Enable VDMA
+    VDMA_CONTROL_REG = VDMA_CTRL_Enable | SDMA_CTRL0_TRF_Fill;
+
     VDMA_DST_ADDY = s;
 
     VDMA_BYTE_2_WRITE = c;
