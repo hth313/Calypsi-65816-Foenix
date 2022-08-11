@@ -33,7 +33,12 @@ void *memset (void *s, int c, size_t n) {
 
   } else {
 
-    __attribute__((far)) unsigned char *p = (__attribute__((far)) unsigned char *)s;
+#if defined(__CALYPSI_TARGET_65816__) && defined(__CALYPSI_DATA_MODEL_SMALL__)
+    unsigned char __far *p = (unsigned char __far *)s;
+#else
+    unsigned char *p = (unsigned char *)s;
+#endif
+
     while (n-- > 0) *p++ = c;
 
   }

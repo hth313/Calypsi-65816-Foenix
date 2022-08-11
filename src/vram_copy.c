@@ -7,7 +7,7 @@
 #include "support.h"
 
 #if defined(__CALYPSI_TARGET_65816__) && defined(__CALYPSI_DATA_MODEL_SMALL__)
-__far void *__memcpy_far (__far void *dest, __far const void *src, size_t n) {
+__far void *__memcpy_far (void __far *dest, const __far void *src, size_t n) {
 #else
 void *memcpy (void *dest, const void *src, size_t n) {
 #endif
@@ -40,8 +40,14 @@ void *memcpy (void *dest, const void *src, size_t n) {
 
   } else {
 
+#if defined(__CALYPSI_TARGET_65816__) && defined(__CALYPSI_DATA_MODEL_SMALL__)
+    unsigned char __far *pout = (unsigned char __far *)dest;
+    unsigned char __far *pin  = (unsigned char __far *)src;
+#else
     unsigned char *pout = (unsigned char *)dest;
     unsigned char *pin  = (unsigned char *)src;
+#endif
+
     while (n-- > 0) *pout++ = *pin++;
 
   }
