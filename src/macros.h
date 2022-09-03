@@ -19,7 +19,7 @@ jump          .macro  dest
               jmp     \dest
               .endm
 
-#else
+#else    // not small code model
 
 #define libcode farcode
 
