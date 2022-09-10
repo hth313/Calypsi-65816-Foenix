@@ -288,35 +288,59 @@ typedef struct color24 {
 //
 // ----------------------------------------------------------------------
 
-typedef struct vicky {
-  uint16_t  master_control;
-  uint8_t   gamma_control;
+typedef struct Vicky {
+  union {
+    struct {
+      uint16_t enableTextMode        : 1;
+      uint16_t enableTextOverlay     : 1;
+      uint16_t graphicsMode          : 1;
+      uint16_t enableBitmap          : 1;
+      uint16_t enableTilemap         : 1;
+      uint16_t enableSprites         : 1;
+      uint16_t enableGammaCorrection : 1;
+      uint16_t disableVideo          : 1;
+      uint16_t videoResolution       : 2;   // see VideoResolution_t below
+    };
+    uint16_t  masterControl;
+  };
+  uint8_t   reserved_00;
   uint8_t   reserved_01;
-  uint8_t   border_control;
-  color24_t border_color;
-  uint8_t   border_width;
-  uint8_t   border_height;
+  union {                     // Border control
+    struct {
+      uint8_t enableBorder           : 1;
+      uint8_t                        : 3;
+      uint8_t borderOffset           : 3;      // 0..7 scroll offset X
+    };
+    uint8_t   borderControl;  // combined border control bits
+  };
+  color24_t borderColor;
+  uint8_t   borderWidth;
+  uint8_t   borderHeight;
   uint8_t   reserved_02[3];
-  color24_t background_color;
-  uint8_t   cursor_control;
-  uint8_t   test_start;
+  color24_t backgroundColor;
+  uint8_t   cursorControl;
+  uint8_t   testStart;
   char      cursor;
-  uint8_t   cursor_color;
-  uint16_t  cursor_x;
-  uint16_t  cursor_y;
-  uint32_t  line_interrupt_control;  // bit 0 = line0, bit 1 = line1
+  uint8_t   cursorColor;
+  uint16_t  cursorX;
+  uint16_t  cursorY;
+  uint32_t  lineInterruptControl;  // bit 0 = line0, bit 1 = line1
   union {
-    uint16_t vicky_chip_num;    // read
-    uint16_t line0_cmp_value;   // write
+    uint16_t vickyChipNumber;    // read
+    uint16_t lineCompareValue0;  // write
   };
   union {
-    uint16_t vicky_chip_version;
-    uint16_t line1_cmp_value;   // write
+    uint16_t vickyChipVersion;   // read
+    uint16_t lineCompareValue1;  // write
   };
-} vicky_t;
+} Vicky_t;
+
+typedef enum VideoResolution {
+  Resolution_640x480, Resolution_800x600,
+  Resolution_320x240, Resolution_400x300
+} VideoResolution_t;
 
 // Vicky registers
-#define vicky ((vicky_t __far *)0xaf0000)
-
+#define Vicky (* (volatile Vicky_t __far *)0xaf0000)
 
 #endif // __VICKY_H__
