@@ -58,11 +58,6 @@ __program_start:
               .pubweak __data_initialization_needed
               .extern __initialize_sections
 __data_initialization_needed:
-#ifdef __CALYPSI_DATA_MODEL_SMALL__
-              lda     ##.sectionEnd data_init_table
-              sta     dp:.tiny(_Dp+0)
-              lda     ##.sectionStart data_init_table
-#else
               lda     ##.word2 (.sectionEnd data_init_table)
               sta     dp:.tiny(_Dp+6)
               lda     ##.word0 (.sectionEnd data_init_table)
@@ -71,7 +66,6 @@ __data_initialization_needed:
               sta     dp:.tiny(_Dp+2)
               lda     ##.word0 (.sectionStart data_init_table)
               sta     dp:.tiny(_Dp+0)
-#endif
               call    __initialize_sections
 
               tsx
