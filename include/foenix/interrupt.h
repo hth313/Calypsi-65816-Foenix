@@ -3,60 +3,48 @@
 
 #include <stdint.h>
 
-typedef struct InterruptController {
-  union {
-    struct {
-      uint8_t startOfFrame      : 1;
-      uint8_t startOfLine       : 1;
-      uint8_t timer0            : 1;
-      uint8_t timer1            : 1;
-      uint8_t timer2            : 1;
-      uint8_t rtc               : 1;
-      uint8_t floppy            : 1;
-      uint8_t mouse             : 1;
-    };
-    uint8_t reg0;
-  };
-  union {
-    struct {
-      uint8_t keyboard          : 1;
-      uint8_t spriteCollision   : 1;
-      uint8_t bitmapCollision   : 1;
-      uint8_t serial2           : 1;
-      uint8_t serial1           : 1;
-      uint8_t midi              : 1;
-      uint8_t parallel          : 1;
-      uint8_t sd                : 1;
-    };
-    uint8_t reg1;
-  };
-  union {
-    struct {
-      uint8_t opl3              : 1;
-      uint8_t gabe0             : 1;
-      uint8_t gabe1             : 1;
-      uint8_t vdma              : 1;
-      uint8_t tileCollision     : 1;
-      uint8_t gabe2             : 1;
-      uint8_t externalExpansion : 1;
-      uint8_t sdInsert          : 1;
-    };
-    uint8_t reg2;
-  };
-  union {
-    struct {
-      uint8_t opn2              : 1;
-      uint8_t opm               : 1;
-      uint8_t ide               : 1;
-      uint8_t                   : 1;
-      uint8_t                   : 1;
-      uint8_t                   : 1;
-      uint8_t                   : 1;
-      uint8_t                   : 1;
-    };
-    uint8_t reg3;
-  };
-} InterruptController_t;
+typedef struct InterruptControllerPending {
+  uint8_t reg0;
+  uint8_t reg1;
+  uint8_t reg2;
+  uint8_t reg3;
+} InterruptController_t;;
+
+// Register 0 bits
+#define InterruptStartOfFrame      (1 << 0)
+#define InterruptStartOfLine       (1 << 1)
+#define InterruptTimer0            (1 << 2)
+#define InterruptTimer1            (1 << 3)
+#define InterruptTimer2            (1 << 4)
+#define InterruptRTC               (1 << 5)
+#define InterruptFloppy            (1 << 6)
+#define InterruptMouse             (1 << 7)
+
+// Register 1 bits
+#define InterruptKeyboard          (1 << 0)
+#define InterruptSpriteCollision   (1 << 1)
+#define InterruptBitmapCollision   (1 << 2)
+#define InterruptSerial2           (1 << 3)
+#define InterruptSerial1           (1 << 4)
+#define InterruptMIDI              (1 << 5)
+#define InterruptParallel          (1 << 6)
+#define InterruptSD                (1 << 7)
+
+// Register 2 bits
+#define InterruptOPL3              (1 << 0)
+#define InterruptGabe0             (1 << 1)
+#define InterruptGabe1             (1 << 2)
+#define InterruptVdma              (1 << 3)
+#define InterruptTileCollision     (1 << 4)
+#define InterruptGabe2             (1 << 5)
+#define InterruptExternalExpansion (1 << 6)
+#define InterruptInsertSD          (1 << 7)
+
+// Register 3 bits
+#define InterruptOPN2              (1 << 0)
+#define InterruptOPM               (1 << 1)
+#define InterruptIDE               (1 << 2)
+
 
 // Interrupt mask register. A bit value of 0 enables an interrupt,
 // a value of 1 disables it.
