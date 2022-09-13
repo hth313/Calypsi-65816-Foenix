@@ -324,7 +324,8 @@ typedef struct Vicky {
   uint8_t   cursorColor;
   uint16_t  cursorX;
   uint16_t  cursorY;
-  uint32_t  lineInterruptControl;  // bit 0 = line0, bit 1 = line1
+  uint8_t   _lineInterruptControl[3];
+  uint8_t   lineInterruptControl;  // bit 0 = line0, bit 1 = line1
   union {
     uint16_t vickyChipNumber;    // read
     uint16_t lineCompareValue0;  // write
