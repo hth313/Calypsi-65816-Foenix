@@ -1,0 +1,49 @@
+#ifndef __FOENIX_TIMER_H__
+#define __FOENIX_TIMER_H__
+
+#include <stdint.h>
+
+struct timer_value {
+  uint8_t low;
+  uint8_t mid;
+  uint8_t high;
+};
+
+typedef struct timer {
+  union {
+    struct {
+      uint8_t enable    : 1;
+      uint8_t clear     : 1;
+      uint8_t load      : 1;
+      uint8_t direction : 1;
+    };
+    uint8_t control;
+  };
+  struct timer_value value;
+  union {
+    struct {
+      uint8_t reload_clear : 1;
+      uint8_t reload       : 1;
+    };
+    uint8_t compare_control;
+  };
+  struct timer_value compare_value;
+} timer_t;
+
+// Use with 'direction' bit
+enum timer_direction { CountDown, CountUp };
+
+// There are three timers, use them as timer[n].field,
+// where n is 0-2.
+#define Timer ((timer_t *)0x0160)
+
+#define SetTimeValue(tv,n)  {  \
+  tv.low  = n & 0xff;          \
+  tv.mid  = (n >> 8)  & 0xff;  \
+  tv.high = (n >> 16) & 0xff;  \
+}
+
+#define SystemClockHz 14318180ul
+#define MillisToClockValue(millis) ((uint32_t)(SystemClockHz * (millis) / 1000LL))
+
+#endif // __FOENIX_TIMER_H__
