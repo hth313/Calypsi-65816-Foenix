@@ -8,7 +8,7 @@ typedef struct InterruptControllerPending {
   uint8_t reg1;
   uint8_t reg2;
   uint8_t reg3;
-} InterruptController_t;;
+} InterruptController_t;
 
 // Register 0 bits
 #define InterruptStartOfFrame      (1 << 0)
