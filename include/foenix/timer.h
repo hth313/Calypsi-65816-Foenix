@@ -43,7 +43,8 @@ enum timer_direction { CountDown, CountUp };
   tv.high = (n >> 16) & 0xff;  \
 }
 
-#define SystemClockHz 14318180ul
-#define MillisToClockValue(millis) ((uint32_t)(SystemClockHz * (millis) / 1000LL))
+#define SystemClockHz 14318180ull
+#define MillisToClockValue(millis) ((uint32_t)((SystemClockHz * (millis) + 500) / 1000LL))
+#define MicrosToClockValue(micros) ((uint32_t)((SystemClockHz * (micros) + 500000) / 1000000LL))
 
 #endif // __FOENIX_TIMER_H__
