@@ -152,7 +152,7 @@ typedef struct tilemap {
 
 // There are four tilemap register sets, use them as tilemap[n].field
 // where n is 0-3.
-#define tilemap ((tilemap_t __far *)0xaf0200)
+#define Tilemap ((tilemap_t __far *)0xaf0200)
 
 // Bits for control register
 #define TILE_Enable       0x01
@@ -180,7 +180,7 @@ inline vram_ptr vicky_address (vram_ptr p) {
 
 // There are eight tileset register sets, use them as tileset[n].field
 // where n is 0-7.
-#define tileset ((tileset_t __far *)0xaf0280)
+#define Tileset ((tileset_t __far *)0xaf0280)
 
 // ----------------------------------------------------------------------
 //
@@ -198,7 +198,7 @@ typedef struct bitplane {
 
 // There are two bitmap planes, use them as bitplane[n].field
 // where n is 0-1.
-#define bitplane ((bitplane_t __far *)0xaf0100)
+#define Bitplane ((bitplane_t __far *)0xaf0100)
 
 // ----------------------------------------------------------------------
 //
@@ -223,7 +223,7 @@ typedef struct sprite {
 
 // There are 64 sprite register sets, use them as sprite[n].field
 // where n is 0-63.
-#define sprite ((sprite_t __far *)0xaf0c00)
+#define Sprite ((sprite_t __far *)0xaf0c00)
 
 // ----------------------------------------------------------------------
 //
@@ -273,7 +273,7 @@ typedef struct vdma {
                 // Do not attempt to access VRAM while a VDMA is in progress!
 
 // Video DMA
-#define vdma ((vdma_t __far *)0xaf0400)
+#define VDMA ((vdma_t __far *)0xaf0400)
 
 // 24-bit color
 typedef struct color24 {
