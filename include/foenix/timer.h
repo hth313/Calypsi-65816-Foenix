@@ -10,15 +10,7 @@ struct timer_value {
 };
 
 typedef struct timer {
-  union {
-    struct {
-      uint8_t enable    : 1;
-      uint8_t clear     : 1;
-      uint8_t load      : 1;
-      uint8_t direction : 1;
-    };
-    uint8_t control;
-  };
+  uint8_t control;
   struct timer_value value;
   union {
     struct {
@@ -32,6 +24,8 @@ typedef struct timer {
 
 // Use with 'direction' bit
 enum timer_direction { CountDown, CountUp };
+
+enum timer_control { TimerEnable = 1, TimerClear = 2, TimerLoad = 4, TimerCountUp = 8, TimerCountDown = 0 };
 
 // There are three timers, use them as timer[n].field,
 // where n is 0-2.
