@@ -1,4 +1,6 @@
-              .section code
+#include "macros.h"
+
+	      .section libcode
               .public _Stub_exit
               .extern _InitialStack
 _Stub_exit:

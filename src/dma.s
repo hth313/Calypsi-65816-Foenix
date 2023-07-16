@@ -1,6 +1,6 @@
 #include "macros.h"
 
-              .section code
+              .section libcode
               .public DMA_wait_delay
 DMA_wait_delay:                     ; 6 cycles jsr
               nop                   ; 4 cycles
