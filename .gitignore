@@ -1,3 +1,4 @@
 *.a
 obj/*.o
 obj/*.lst
+obj/c256*
