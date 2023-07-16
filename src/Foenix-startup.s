@@ -1,5 +1,5 @@
 ;;; Startup variant, change attribute value if you make your own
-              .rtmodel cstartup,"Foenix"
+              .rtmodel cstartup,"foenix"
 
               .rtmodel version, "1"
               .rtmodel cpu, "*"
