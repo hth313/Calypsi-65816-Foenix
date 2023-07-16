@@ -1,10 +1,11 @@
 #include <errno.h>
-#include <sys/types.h>
 #include <stubs.h>
 
+extern void __kernel_putchar(char);
+
 // Can call kernel directly in large code model only.
-#ifdef __CALYPSI_DATA_MODEL_SMALL__
-#define CHROUT(c) _Stub_putchar(c)
+#ifdef __CALYPSI_CODE_MODEL_SMALL__
+#define CHROUT(c) __kernel_putchar(c)
 #else
 #define CHROUT(c) ( (void (*)(char) ) 0x1018) (c)
 #endif

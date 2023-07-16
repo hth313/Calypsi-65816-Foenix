@@ -6,7 +6,7 @@ CFLAGS = --core=65816 --target=Foenix --always-inline
 ALL_LIBS = Foenix-lc-sd.a Foenix-lc-md.a
 
 # Common source files
-ASM_SRCS = Foenix-startup.s stub_exit.s  stub_putchar.s dma.s
+ASM_SRCS = Foenix-startup.s stub_exit.s  kernel_putchar.s dma.s
 C_SRCS = $(STUB_SRCS) vram_copy.c vram_fill.c vdma_wait.c
 STUB_SRCS = stub_write.c stub_lseek.c stub_close.c
 
