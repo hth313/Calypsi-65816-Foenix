@@ -35,6 +35,7 @@
               .pubweak __program_root_section, __program_start
 __program_root_section:
 __program_start:
+	      sei
               clc
               xce                   ; native 16-bit mode
               rep     #0x38         ; 16-bit registers, no decimal mode
