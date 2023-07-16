@@ -12,6 +12,7 @@
               .extern main, exit
               .extern _Dp, _Vfp
               .extern _DirectPageStart
+	      .extern _InitialStack
 
 #ifndef __CALYPSI_DATA_MODEL_SMALL__
               .extern _NearBaseAddress
@@ -126,19 +127,3 @@ __call_heap_initialize:
               .pubweak __low_level_init
 __low_level_init:
               return
-
-;;; ***************************************************************************
-;;;
-;;; Keep track of the initial stack pointer so that it can be restores to make
-;;; a return back on exit().
-;;;
-;;; ***************************************************************************
-
-#ifdef __CALYPSI_DATA_MODEL_SMALL__
-              .section zdata, bss
-#else
-              .section znear, bss
-#endif
-              .public _InitialStack
-_InitialStack:
-              .space  2

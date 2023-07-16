@@ -7,7 +7,7 @@ ALL_LIBS = Foenix-lc-sd.a Foenix-lc-md.a
 
 # Common source files
 ASM_SRCS = Foenix-startup.s stub_exit.s  kernel_putchar.s dma.s
-C_SRCS = $(STUB_SRCS) vram_copy.c vram_fill.c vdma_wait.c
+C_SRCS = $(STUB_SRCS) vram_copy.c vram_fill.c vdma_wait.c initial-stack.c
 STUB_SRCS = stub_write.c stub_lseek.c stub_close.c
 
 # Object files
