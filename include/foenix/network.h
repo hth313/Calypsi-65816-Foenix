@@ -3,9 +3,6 @@
 
 #include <stdint.h>
 
-typedef uint8_t[4] address_t;
-
-
 struct ip_info {
   uint32_t addr; // local address, network byte order
   uint32_t mask; // network mask, network byte order
@@ -23,7 +20,7 @@ struct udp_info {
 
 // Initialize the network interface. Returns -1 on error, 0 if successful.
 
-extern void ip_init(__far struct ip_info *);
+extern int ip_init(__far struct ip_info *);
 
 // Send a packet, returns -1 if there was a problem, e.g. network
 // interface not set up, no route to host. 1 if packet was sent.
@@ -32,7 +29,7 @@ extern void ip_init(__far struct ip_info *);
 //        that is to allocate it locally on the stack or statically in
 //        __tiny memory.
 
-extern void udp_send(struct udp_info *);
+extern int udp_send(struct udp_info *);
 
 // udp_recv() needs to be polled semi-regularly, returns -1 if error,
 // 0 if queue is empty, 1 if a packet was received
@@ -41,6 +38,6 @@ extern void udp_send(struct udp_info *);
 //        that is to allocate it locally on the stack or statically in
 //        __tiny memory.
 
-extern void int udp_recv(struct udp_info *);
+extern int udp_recv(struct udp_info *);
 
 #endif // __NETWORK_H__
