@@ -142,17 +142,20 @@ typedef uint8_t __far24 * vram_ptr;
 // ----------------------------------------------------------------------
 
 typedef struct tilemap {
-  uint8_t  control;
+  union {
+    struct {
+      uint8_t layer_enable : 1;
+      uint8_t              : 5;
+      uint8_t collision_on : 1;
+    };
+    uint8_t control;
+  };
   vram_ptr data;
   uint16_t width;
   uint16_t height;
   uint16_t x;
   uint16_t y;
 } tilemap_t;
-
-// There are four tilemap register sets, use them as tilemap[n].field
-// where n is 0-3.
-#define Tilemap ((tilemap_t __far *)0xaf0200)
 
 // Bits for control register
 #define TILE_Enable       0x01
@@ -171,16 +174,12 @@ typedef struct tileset {
 
 // Adjust video RAM address for Vicky. Video RAM starts at 0xb00000
 // but Vicky sees that as address 0.
-inline vram_ptr vicky_address (vram_ptr p) {
+inline vram_ptr to_vicky_address (vram_ptr p) {
   return (vram_ptr) ((long)p - 0xb00000);
 }
 
 // Tile set configuration bits.
 #define TILE_Stride_256    (1 << 3)
-
-// There are eight tileset register sets, use them as tileset[n].field
-// where n is 0-7.
-#define Tileset ((tileset_t __far *)0xaf0280)
 
 // ----------------------------------------------------------------------
 //
@@ -188,17 +187,13 @@ inline vram_ptr vicky_address (vram_ptr p) {
 //
 // ----------------------------------------------------------------------
 
-typedef struct bitplane {
+typedef struct bitmap {
   uint8_t  control;
   vram_ptr start;
   uint8_t  x_offset;
   uint8_t  y_offset;
   uint16_t reserved;
-} bitplane_t;
-
-// There are two bitmap planes, use them as bitplane[n].field
-// where n is 0-1.
-#define Bitplane ((bitplane_t __far *)0xaf0100)
+} bitmap_t;
 
 // ----------------------------------------------------------------------
 //
@@ -214,16 +209,16 @@ typedef struct sprite {
       uint8_t depth : 3;
       uint8_t collision_enable : 1;
     };
-    uint8_t reg;
-  } control;
+    uint8_t control;
+  };
   vram_ptr data;
   uint16_t x;
   uint16_t y;
 } sprite_t;
 
-// There are 64 sprite register sets, use them as sprite[n].field
-// where n is 0-63.
-#define Sprite ((sprite_t __far *)0xaf0c00)
+#define SPRITE_SIZE 1024
+#define SPRITE_COUNT 64
+#define SPRITE_HEIGHT 32
 
 // ----------------------------------------------------------------------
 //
@@ -288,20 +283,28 @@ typedef struct color24 {
 //
 // ----------------------------------------------------------------------
 
-typedef struct Vicky {
+struct _Vicky {
   union {
     struct {
-      uint16_t enableTextMode        : 1;
-      uint16_t enableTextOverlay     : 1;
-      uint16_t graphicsMode          : 1;
-      uint16_t enableBitmap          : 1;
-      uint16_t enableTilemap         : 1;
-      uint16_t enableSprites         : 1;
-      uint16_t enableGammaCorrection : 1;
-      uint16_t disableVideo          : 1;
-      uint16_t videoResolution       : 2;   // see VideoResolution_t below
+      uint16_t text_mode_enable         : 1;
+      uint16_t text_mode_overlay_enable : 1;
+      uint16_t graphic_mode_enable      : 1;
+      uint16_t bitmap_engine_enable     : 1;
+      uint16_t tile_engine_enable       : 1;
+      uint16_t sprite_engine_enable     : 1;
+      uint16_t gamma_enable             : 1;
+      uint16_t display_sleep            : 1;
+      uint16_t video_resolution         : 2;   // see VideoResolution_t below
     };
-    uint16_t  masterControl;
+    uint16_t  master_control;
+#define TEXT_MODE_ENABLE           0x00000001
+#define TEXT_MODE_OVERLAY_ENABLE   0x00000002
+#define GRAPHIC_MODE_ENABLE        0x00000004
+#define BITMAP_ENGINE_ENABLE       0x00000008
+#define TILE_ENGINE_ENABLE         0x00000010
+#define SPRITE_ENGINE_ENABLE       0x00000020
+#define GAMMA_ENABLE               0x00000040
+#define DISPLAY_SLEEP              0x00000080
   };
   uint8_t   reserved_00;
   uint8_t   reserved_01;
@@ -313,35 +316,94 @@ typedef struct Vicky {
     };
     uint8_t   borderControl;  // combined border control bits
   };
-  color24_t borderColor;
-  uint8_t   borderWidth;
-  uint8_t   borderHeight;
+  color24_t border_color;
+  uint8_t   border_width;
+  uint8_t   border_height;
   uint8_t   reserved_02[3];
-  color24_t backgroundColor;
-  uint8_t   cursorControl;
-  uint8_t   testStart;
+  color24_t background_color;
+  uint8_t   cursor_control;
+  uint8_t   test_start;
   char      cursor;
-  uint8_t   cursorColor;
+  uint8_t   cursor_color;
   uint16_t  cursorX;
   uint16_t  cursorY;
-  uint8_t   _lineInterruptControl[3];
-  uint8_t   lineInterruptControl;  // bit 0 = line0, bit 1 = line1
+  uint8_t   _line_interrupt_control[3];
+  uint8_t   line_interrupt_control;  // bit 0 = line0, bit 1 = line1
   union {
-    uint16_t vickyChipNumber;    // read
-    uint16_t lineCompareValue0;  // write
+    uint16_t vicky_chip_number;    // read
+    uint16_t line_compare_value0;  // write
   };
   union {
-    uint16_t vickyChipVersion;   // read
-    uint16_t lineCompareValue1;  // write
+    uint16_t vicky_chip_version;   // read
+    uint16_t line_compare_value1;  // write
   };
-} Vicky_t;
+};
 
 typedef enum VideoResolution {
   Resolution_640x480, Resolution_800x600,
   Resolution_320x240, Resolution_400x300
 } VideoResolution_t;
 
+// ----------------------------------------------------------------------
+//
+// Color lookup table
+//
+// ----------------------------------------------------------------------
+
+typedef struct lut {
+  uint8_t data[256][4];
+} lut_t;
+
+// ----------------------------------------------------------------------
+//
+// Complete Vicky
+//
+// ----------------------------------------------------------------------
+
+struct CompleteVicky {
+  union {                         // base registers
+    struct _Vicky vicky;
+    char _vicky_skip[0x0100];
+  };
+  union {
+    bitmap_t bitmap[2];           // bitmap registers offset 0x0100
+    char _bitmap_skip[0x100];
+  };
+  union {
+    tilemap_t tilemap[4];         // timemap registers offset 0x0200
+    char _tilemap_skip[0x80];
+  };
+  union {
+    tileset_t tileset[8];         // tileset registers offset 0x0280
+    char _tileset_skip[0x80];
+  };
+  char _collision[0x100];
+  union {
+    vdma_t vdma;
+    char _vdma_skip[0x100];
+  };
+  char mouse_pointer_data[2][0x100];
+  char _mouse[0x100];
+  char _rtc[0x10];
+  char _reserved1[0x400 - 0x10];
+  union {
+    sprite_t sprite[64];          // sprite registers offset 0x1000
+    char _sprite_skip[0x200];
+  };
+  char _reserved2[0x200];
+  char _reserved3[0x1000];
+  lut_t lut[8];                   // lut registers offset 0x2000
+};
+
 // Vicky registers
-#define Vicky (* (volatile Vicky_t __far *)0xaf0000)
+#define _CompleteVicky (* (volatile struct CompleteVicky __far *)0xaf0000)
+
+// Convenience access macros
+#define Vicky      _CompleteVicky.vicky
+#define Sprite     _CompleteVicky.sprite
+#define Bitmap     _CompleteVicky.bitmap
+#define Tileset    _CompleteVicky.tileset
+#define Tilemap    _CompleteVicky.tilemap
+#define LUT        _CompleteVicky.lut
 
 #endif // __VICKY_H__
