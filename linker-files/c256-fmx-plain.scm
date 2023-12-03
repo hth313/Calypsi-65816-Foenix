@@ -6,8 +6,10 @@
     (memory Vector (address (#xffe4 . #xffff)))
 
     (memory palettes (address (#xaf2000 . #xaf3fff))
-            (section palette0 palette1 palette2 palette3
-                     palette4 palette5 palette6 palette7))
+	    (section (palette0 #xaf2000) (palette1 #xaf2400))
+	    (section (palette2 #xaf2800) (palette3 #xaf2c00))
+	    (section (palette4 #xaf3000) (palette5 #xaf3400))
+	    (section (palette6 #xaf3800) (palette7 #xaf3c00)))
     (memory vram (address (#xb00000 . #xefffff))
             (section vram))
     ))
