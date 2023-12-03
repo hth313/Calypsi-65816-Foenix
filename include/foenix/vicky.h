@@ -174,7 +174,7 @@ typedef struct tileset {
 
 // Adjust video RAM address for Vicky. Video RAM starts at 0xb00000
 // but Vicky sees that as address 0.
-inline vram_ptr to_vicky_address (vram_ptr p) {
+inline vram_ptr vicky_address (vram_ptr p) {
   return (vram_ptr) ((long)p - 0xb00000);
 }
 
