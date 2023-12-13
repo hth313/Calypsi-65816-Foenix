@@ -10,37 +10,5 @@ __far void *__memset__far (__far void *s, int c, size_t n) {
 #else
 void *memset (void *s, int c, size_t n) {
 #endif
-  if (in_vram(s)) {
-
-    // Enable VDMA
-    VDMA_CONTROL_REG = VDMA_CTRL_Enable | SDMA_CTRL0_TRF_Fill;
-
-    VDMA_DST_ADDY = s;
-
-    VDMA_BYTE_2_WRITE = c;
-    VDMA_SIZE = n;
-
-    // Start VDMA
-    VDMA_CONTROL_REG |= VDMA_CTRL_Start_TRF;
-
-    // When started, the 65816 is held, but it takes a few cycles.
-    // Provide a short delay to ensure that we do not execute too far
-    // before the transfer actually starts. Call a delay subroutine for
-    // this.
-    DMA_wait_delay();
-
-    wait_for_DMA_to_finish();
-
-  } else {
-
-#if defined(__CALYPSI_TARGET_65816__) && defined(__CALYPSI_DATA_MODEL_SMALL__)
-    unsigned char __far *p = (unsigned char __far *)s;
-#else
-    unsigned char *p = (unsigned char *)s;
-#endif
-
-    while (n-- > 0) *p++ = c;
-
-  }
-  return s;
+  return memset_dma(s, c, n);
 }

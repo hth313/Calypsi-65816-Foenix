@@ -147,6 +147,15 @@
 
 // ----------------------------------------------------------------------
 //
+// DMA copy with 32-bit size (size_t is usually 16-bit)
+//
+// ----------------------------------------------------------------------
+
+extern void *memcpy_dma(void *dest, const void *src, uint32_t n);
+extern void *memset_dma (void *s, int c, uint32_t n);
+
+// ----------------------------------------------------------------------
+//
 // Functions provided for copy and set video memory.
 //
 // ----------------------------------------------------------------------
