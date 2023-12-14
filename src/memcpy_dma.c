@@ -32,10 +32,12 @@ void *memcpy_dma (void *dest, const void *src, uint32_t n) {
 
     wait_for_VDMA_to_finish();
 
+    VDMA_CONTROL_REG = 0;
+
   } else {
 
     // Enable DMA and VDMA
-    SDMA_CTRL_REG0 = SDMA_CTRL0_Enable | SDMA_CTRL0_SysRAM_Src;
+    SDMA_CTRL_REG0 = SDMA_CTRL0_Enable | SDMA_XFER_SRAM2SRAM;
 
     SDMA_SRC_ADDY = src;
     SDMA_DST_ADDY = dest;
@@ -51,10 +53,9 @@ void *memcpy_dma (void *dest, const void *src, uint32_t n) {
     // this.
     DMA_wait_delay();
 
+    // As the CPU is stopped during DMA, when we resume it will
+    // be done, now disable the DMA.
     SDMA_CTRL_REG0 = 0;
-
-    wait_for_SDMA_to_finish();
-
   }
   return dest;
 }
