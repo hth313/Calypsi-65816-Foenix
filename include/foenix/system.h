@@ -18,7 +18,7 @@ struct _SystemControl {
       uint8_t                   : 2;
       uint8_t manual_reset      : 1;
     };
-    uint16_t control;
+    uint8_t control;
 #define POWER_LED      0x01
 #define SD_LED         0x02
 #define BUZZER         0x10
