@@ -19,7 +19,23 @@ jump          .macro  dest
               jmp     \dest
               .endm
 
-#else    // not small code model
+#elif defined(__CALYPSI_CODE_MODEL_COMPACT__)
+
+#define	libcode compactcode
+
+call          .macro  dest
+              jsr     .kbank \dest
+              .endm
+
+return        .macro
+              rts
+              .endm
+
+jump          .macro  dest
+              jmp     .kbank \dest
+              .endm
+
+#else
 
 #define libcode farcode
 
@@ -56,6 +72,8 @@ jump          .macro  dest
 
 #if defined(__CALYPSI_CODE_MODEL_SMALL__)
               .rtmodel codeModel,"small"
+#elif defined(__CALYPSI_CODE_MODEL_COMPACT__)
+              .rtmodel codeModel,"compact"
 #elif defined(__CALYPSI_CODE_MODEL_LARGE__)
               .rtmodel codeModel,"large"
 #else

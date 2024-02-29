@@ -12,7 +12,7 @@
               .extern main, exit
               .extern _Dp, _Vfp
               .extern _DirectPageStart
-	      .extern _InitialStack
+              .extern _InitialStack
 
 #ifndef __CALYPSI_DATA_MODEL_SMALL__
               .extern _NearBaseAddress
@@ -52,10 +52,18 @@ __program_start:
               plb                   ; pop 8 dummy
               plb                   ; set data bank
 
+#ifdef  __CALYPSI_CODE_MODEL_COMPACT__
+              jmp     long:_Trampoline_program_start
+              .section compactcode, noreorder
+_Trampoline_program_start:
+#define CODE compactcode
+#else
+#define CODE code
+#endif
               call    __low_level_init
 
 ;;; **** Initialize data sections if needed.
-              .section code, noroot, noreorder
+              .section CODE, noroot, noreorder
               .pubweak __data_initialization_needed
               .extern __initialize_sections
 __data_initialization_needed:
@@ -77,14 +85,14 @@ __data_initialization_needed:
 #endif
 
 ;;; **** Initialize streams if needed.
-              .section code, noroot, noreorder
+              .section CODE, noroot, noreorder
               .pubweak __call_initialize_global_streams
               .extern __initialize_global_streams
 __call_initialize_global_streams:
               call    __initialize_global_streams
 
 ;;; **** Initialize heap if needed.
-              .section code, noroot, noreorder
+              .section CODE, noroot, noreorder
               .pubweak __call_heap_initialize
               .extern __heap_initialize, __default_heap
 __call_heap_initialize:
@@ -108,7 +116,7 @@ __call_heap_initialize:
 #endif
               call    __heap_initialize
 
-              .section code, root, noreorder
+              .section CODE, root, noreorder
               lda     ##0           ; argc = 0
               call    main
               jump    exit
