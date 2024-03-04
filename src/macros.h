@@ -51,6 +51,8 @@ jump          .macro  dest
               jmp     long:\dest
               .endm
 
+#endif // __CALYPSI_CODE_MODEL_SMALL__
+
 // ----------------------------------------------------------------------
 //
 // Define code and data model used. This is to add a bit of safety in
@@ -80,6 +82,5 @@ jump          .macro  dest
 #pragma GCC error "unexpected code model"
 #endif
 
-#endif // __CALYPSI_CODE_MODEL_SMALL__
 #endif // __CALYPSI_ASSEMBLER__
 #endif // __MACROS_H
