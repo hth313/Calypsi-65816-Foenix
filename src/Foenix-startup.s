@@ -32,7 +32,11 @@
 ;;;
 ;;; ***************************************************************************
 
+#ifdef __CALYPSI_CODE_MODEL_COMPACT__
+	      .section code
+#else
               .section code, noreorder
+#endif
               .pubweak __program_root_section, __program_start
 __program_root_section:
 __program_start:
